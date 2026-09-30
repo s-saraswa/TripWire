@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripWire | Distributed Price Ticker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        .flash-green { animation: flashGreen 1s; }
+        .flash-red { animation: flashRed 1s; }
+        @keyframes flashGreen { from { background-color: #dcfce7; } to { background-color: transparent; } }
+        @keyframes flashRed { from { background-color: #fee2e2; } to { background-color: transparent; } }
+        .tab-active { border-bottom: 2px solid #818cf8; color: #818cf8; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+    <nav class="bg-slate-800 border-b border-slate-700 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tight text-indigo-400">TripWire <span class="text-slate-400 text-sm font-normal">Distributed Ticker</span></h1>
+            <div id="connection-status" class="text-xs px-2 py-1 rounded bg-red-900 text-red-200">Disconnected</div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6">
+        <!-- Symbol Adder -->
+        <div class="mb-8 bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-medium text-slate-400 mb-1">Add New Symbol</label>
+                <input id="symbol-input" type="text" placeholder="e.g. TSLA or RELIANCE.BSE" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white">
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-medium text-slate-400 mb-1">Market Type</label>
+                <select id="market-input" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white">
+                    <option value="US">US Stock</option>
+                    <option value="INDIA">Indian Stock</option>
+                    <option value="CRYPTO">Crypto</option>
+                </select>
+            </div>
+            <button id="add-symbol-btn" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-lg font-medium transition-colors">Add Asset</button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex gap-8 mb-6 border-b border-slate-700">
+            <button onclick="switchTab('us')" id="tab-us" class="pb-2 px-1 font-medium transition-all tab-active">US Stocks</button>
+            <button onclick="switchTab('in')" id="tab-in" class="pb-2 px-1 font-medium transition-all text-slate-400 hover:text-slate-200">Indian Stocks</button>
+            <button onclick="switchTab('crypto')" id="tab-crypto" class="pb-2 px-1 font-medium transition-all text-slate-400 hover:text-slate-200">Crypto</button>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="content-us" class="tab-content">
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-700/50 text-slate-400 text-sm">
+                        <tr>
+                            <th class="p-4">Symbol</th>
+                            <th class="p-4 text-right">Price</th>
+                            <th class="p-4 text-right">Change %</th>
+                            <th class="p-4 text-right">Vol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-us-body">
+                        <tr class="text-slate-500 italic"><td colspan="4" class="p-4 text-center">Waiting for data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="content-in" class="tab-content hidden">
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-700/50 text-slate-400 text-sm">
+                        <tr>
+                            <th class="p-4">Symbol</th>
+                            <th class="p-4 text-right">Price</th>
+                            <th class="p-4 text-right">Change %</th>
+                            <th class="p-4 text-right">Vol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-in-body">
+                        <tr class="text-slate-500 italic"><td colspan="4" class="p-4 text-center">Waiting for data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="content-crypto" class="tab-content hidden">
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-700/50 text-slate-400 text-sm">
+                        <tr>
+                            <th class="p-4">Symbol</th>
+                            <th class="p-4 text-right">Price</th>
+                            <th class="p-4 text-right">Change %</th>
+                            <th class="p-4 text-right">Cap</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crypto-table-body">
+                        <tr class="text-slate-500 italic"><td colspan="4" class="p-4 text-center">Waiting for data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

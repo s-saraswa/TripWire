@@ -1,0 +1,37 @@
+spring.application.name=tripwire
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.consumer.group-id=price-processor-group
+spring.kafka.consumer.auto-offset-reset=earliest
+spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+
+# Stock price ingestion config
+app.stock.symbols=AAPL,GOOGL,MSFT,AMZN,TSLA,SPCX
+app.stock.api.alpha_key=YOUR_ALPHA_VANTAGE_API_KEY
+app.stock.api.finnhub_key=YOUR_FINNHUB_API_KEY
+app.stock.api.polygon_key=YOUR_POLYGON_API_KEY
+app.stock.fetch.interval=30000
+
+# Indian Stock ingestion config
+app.indian.stock.symbols=RELIANCE.BSE,TCS.BSE,HDFCBANK.BSE,ICICIBANK.BSE,INFY.BSE,HINDUNILVR.BSE,SBIN.BSE,BHARTIARTL.BSE,ITC.BSE,LTIM.BSE
+app.indian.stock.fetch.interval=60000
+
+# Crypto price ingestion config
+app.crypto.symbols=bitcoin,ethereum,solana
+app.crypto.api.cmc_key=demo
+app.crypto.fetch.interval=30000
+app.crypto.symbols=bitcoin,ethereum,binancecoin,solana,cardano,ripple,dogecoin,polkadot,avalanche-2,chainlink
+app.crypto.api.url=https://api.coingecko.com/api/v3
+app.crypto.fetch.interval=30000
+
+# Server config
+server.port=8080
+server.servlet.context-path=/
+
+# Actuator for monitoring
+management.endpoints.web.exposure.include=health,info,metrics
+management.endpoint.health.show-details=always

@@ -2,14 +2,14 @@
 
 TripWire is a distributed engineering project designed to provide real-time, aggregated price feeds for stocks and cryptocurrencies. It leverages a multi-source ingestion pipeline to ensure data accuracy and availability, making it resilient to individual API failures or anomalies.
 
-## 🚀 Features
+## Features
 - **Multi-Source Ingestion**: Fetches data from various APIs (Alpha Vantage, Finnhub, Polygon, CoinGecko, Binance, CMC).
 - **Real-time Updates**: Low-latency price broadcasting using WebSockets.
 - **Distributed Architecture**: Decoupled ingestion and processing layers via Apache Kafka.
 - **Fast Storage & Retrieval**: Redis for latest price caching and time-series history.
 - **Data Validation**: Built-in outlier detection and confidence scoring.
 
-## 🏗 Architecture & Data Flow
+## Architecture & Data Flow
 
 The system follows a pipeline architecture to move data from external APIs to the end user:
 
@@ -24,7 +24,7 @@ The system follows a pipeline architecture to move data from external APIs to th
 4. **Delivery Layer**: 
    - The processed update is broadcasted via Spring WebSockets to all subscribed clients in real-time.
 
-## 🧠 Algorithms
+## Algorithms
 
 ### Outlier Removal
 To prevent a single malfunctioning API from skewing the price, TripWire implements an outlier detection algorithm in `PriceAggregatorService`:
@@ -36,7 +36,7 @@ The system calculates a confidence score for every aggregated price:
 - **Calculation**: Based on the average deviation of all filtered sources from the mean.
 - **Result**: A score from 0.0 to 1.0. High consistency across APIs results in a score closer to 1.0; high variance results in a lower score.
 
-## 🛠 Local Setup
+## Local Setup
 
 ### Prerequisites
 - **Java 17**
@@ -60,7 +60,7 @@ The system calculates a confidence score for every aggregated price:
    ./mvnw spring-boot:run
    ```
 
-## 📡 API & Endpoints
+## API & Endpoints
 
 ### WebSockets
 Subscribe to these topics to receive real-time updates:
